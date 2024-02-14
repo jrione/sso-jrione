@@ -1,0 +1,15 @@
+{
+    "server":{
+        "listen": "127.0.0.1",
+        "port": "6969",
+        "timeout": 2,
+        "mode": "debug"
+    },
+    "database":{
+        "username": "app",
+        "password": "app",
+        "hostname": "127.0.0.1",
+        "port": "5432",
+        "name": "app"
+    }
+}
