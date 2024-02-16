@@ -4,18 +4,19 @@ import "github.com/spf13/viper"
 
 type Config struct {
 	Server struct {
-		Listen  string `json:"listen"`
-		Port    string `json:"port"`
-		Timeout int    `json:"timeout"`
-		Mode    string `json:"mode"`
-	} `json:"server"`
+		Listen  string `mapstructure:"listen"`
+		Port    string `mapstructure:"port"`
+		Timeout int    `mapstructure:"timeout"`
+		Mode    string `mapstructure:"mode"`
+		XApiKey string `mapstructure:"x-api-key"`
+	} `mapstructure:"server"`
 	Database struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-		Hostname string `json:"hostname"`
-		Port     string `json:"port"`
-		Name     string `json:"name"`
-	} `json:"database"`
+		Username string `mapstructure:"username"`
+		Password string `mapstructure:"password"`
+		Hostname string `mapstructure:"hostname"`
+		Port     string `mapstructure:"port"`
+		Name     string `mapstructure:"name"`
+	} `mapstructure:"database"`
 }
 
 func NewEnv() *Config {

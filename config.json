@@ -3,7 +3,8 @@
         "listen": "127.0.0.1",
         "port": "6969",
         "timeout": 2,
-        "mode": "debug"
+        "mode": "debug",
+        "x-api-key": "njirlah"
     },
     "database":{
         "username": "app",
