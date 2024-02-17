@@ -23,13 +23,13 @@ func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, 
 	query := `SELECT username,full_name,email,password,updated_at FROM "User"`
 	rows, err := p.DBClient.QueryContext(ctx, query)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 		return nil, err
 	}
 	defer func() {
 		errRow := rows.Close()
 		if errRow != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	}()
 
@@ -44,7 +44,7 @@ func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, 
 			&t.UpdatedAt,
 		)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 			return nil, err
 		}
 		res = append(res, t)
@@ -67,7 +67,7 @@ func (p *postgreUserRepository) GetByUsername(ctx context.Context, username stri
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 		return nil, err
 	}
 

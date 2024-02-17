@@ -21,4 +21,5 @@ func NewLoginRoute(env *config.Config, timeout time.Duration, dbclient *sql.DB, 
 	}
 
 	gr.POST("/login", lc.Login)
+	gr.GET("/getLogin", lc.GetLogin)
 }
