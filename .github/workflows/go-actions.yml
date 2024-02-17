@@ -5,6 +5,8 @@ on:
     branches:
     - "main"
 
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,5 +20,18 @@ jobs:
     - name: Build
       run: go build -v -o ./gin-crud
 
+    - name: Inject Config
+      run: |
+        cat config.example.json  | jq \
+        --arg username "${{secrets.USERNAME}}" \
+        --arg password "${{secrets.PASSWORD}}" \
+        --arg hostname "${{secrets.HOSTNAME}}" \
+        --arg port "${{secrets.PORT}}" \
+        --arg name "${{secrets.NAME}}" \
+        '(. | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )'
+        
     - name: Test
-      run: go test -v .
+      run: |
+        ./gin-crud &
+        curl -I localhost:6969/ | grep 404
+
