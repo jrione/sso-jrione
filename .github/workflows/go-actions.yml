@@ -23,11 +23,11 @@ jobs:
     - name: Inject Config
       run: |
         cat config.example.json  | jq \
-        --arg username "${{secrets.USERNAME}}" \
-        --arg password "${{secrets.PASSWORD}}" \
-        --arg hostname "${{secrets.HOSTNAME}}" \
-        --arg port "${{secrets.PORT}}" \
-        --arg name "${{secrets.NAME}}" \
+        --arg username "${{ secrets.USERNAME }}" \
+        --arg password "${{ secrets.PASSWORD }}" \
+        --arg hostname "${{ secrets.HOSTNAME }}" \
+        --arg port "${{ secrets.PORT }}" \
+        --arg name "${{ secrets.NAME }}" \
         '(. | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )'
         
     - name: Test
