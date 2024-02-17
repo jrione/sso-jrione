@@ -1,13 +1,10 @@
-FROM golang:1.21.4
-
+FROM golang:1.21.4-alpine3.18 as build
 WORKDIR /app/
-
-COPY go.mod go.sum /app/
-RUN go mod download
-
 COPY ./ /app/
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/gin-crud
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ./app/gin-crud
-
-EXPOSE 6969
+FROM scratch
+COPY --from=build /app/gin-crud /app/gin-crud
+COPY ./config.json /
+EXPOSE 8000
 CMD [ "./app/gin-crud" ]
