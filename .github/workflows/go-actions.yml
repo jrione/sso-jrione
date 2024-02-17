@@ -31,5 +31,6 @@ jobs:
     - name: Test
       run: |
         ./gin-crud &
-        curl -I localhost:6969/ | grep 404
+        sleep 10
+        curl -o - -I "localhost:6969" | tac | tac | grep -q "404 Not Found"
 
