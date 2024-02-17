@@ -26,7 +26,7 @@ jobs:
         --arg hostname "${{ secrets.HOSTNAME }}" \
         --arg port "${{ secrets.PORT }}" \
         --arg name "${{ secrets.NAME }}" \
-        '(. | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )'
+        '(. | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )' | tee config.json
         
     - name: Test
       run: |
