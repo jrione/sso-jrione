@@ -9,7 +9,7 @@ import (
 
 func OpenDB(env *Config) *sql.DB {
 
-	conn := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?%v", env.Database.Username, env.Database.Password, env.Database.Hostname, env.Database.Port, env.Database.Name, "sslmode=disable")
+	conn := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=%v", env.Database.Username, env.Database.Password, env.Database.Hostname, env.Database.Port, env.Database.Name, env.Database.SSLMode)
 	client, err := sql.Open("postgres", conn)
 	if err != nil {
 		return nil

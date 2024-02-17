@@ -16,6 +16,7 @@ type Config struct {
 		Hostname string `mapstructure:"hostname"`
 		Port     string `mapstructure:"port"`
 		Name     string `mapstructure:"name"`
+		SSLMode  string `mapstructure:"sslmode"`
 	} `mapstructure:"database"`
 }
 
