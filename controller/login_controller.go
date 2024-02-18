@@ -18,15 +18,15 @@ func (l LoginController) Login(gctx *gin.Context) {
 	if err != nil {
 		gctx.JSON(http.StatusBadRequest, gin.H{
 			"code":  http.StatusBadRequest,
-			"error": err.Error(),
+			"error": "Username and Password Required!",
 		})
 		return
 	}
 	data, err := l.LoginUseCase.CheckUser(gctx, req.Username)
 	if err != nil {
 		gctx.JSON(http.StatusNotFound, gin.H{
-			"code": http.StatusNotFound,
-			"err":  "User Not Found",
+			"code": http.StatusUnauthorized,
+			"err":  "Incorrect Username Or Password",
 		})
 		return
 	}
