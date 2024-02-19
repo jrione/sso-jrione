@@ -11,6 +11,7 @@ func NewTestRoute(env *config.Config, timeout time.Duration, gr *gin.RouterGroup
 	gr.GET("/test", func(g *gin.Context) {
 		g.JSON(200, gin.H{
 			"njir": env.Server.Mode,
+			"bruh": "bruh"
 		})
 	})
 }
