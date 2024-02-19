@@ -19,7 +19,9 @@ func SetupRoute(env *config.Config, timeout time.Duration, dbclient *sql.DB, r *
 	store := cookie.NewStore([]byte("secret"))
 	store.Options(sessions.Options{MaxAge: int(60 * time.Minute / time.Second)})
 
-	// authRouter.Use(middleware.AuthMiddleware(env))
+	authRouter.Use(middleware.AuthMiddleware(env))
+	NewRegisterRoute(env, timeout, dbclient, authRouter)
+
 	authRouter.Use(sessions.Sessions("sess", store))
 	NewLoginRoute(env, timeout, dbclient, authRouter)
 

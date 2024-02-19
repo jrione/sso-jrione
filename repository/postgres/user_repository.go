@@ -41,7 +41,6 @@ func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, 
 			&t.FullName,
 			&t.Email,
 			&t.Password,
-			&t.UpdatedAt,
 		)
 		if err != nil {
 			log.Print(err)
@@ -63,7 +62,6 @@ func (p *postgreUserRepository) GetByUsername(ctx context.Context, username stri
 		&res.FullName,
 		&res.Email,
 		&res.Password,
-		&res.UpdatedAt,
 	)
 
 	if err != nil {

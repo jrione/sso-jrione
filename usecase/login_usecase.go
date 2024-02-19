@@ -24,5 +24,6 @@ func (l *loginUseCase) CheckUser(c context.Context, username string) (loginData 
 	defer cancel()
 
 	loginData, err = l.userRepo.GetByUsername(ctx, username)
+
 	return
 }
