@@ -14,7 +14,7 @@ func AuthMiddleware(env *config.Config) gin.HandlerFunc {
 		apiKey := gctx.GetHeader("X-API-Key")
 		if apiKey != env.Server.XApiKey {
 			gctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Unauthorized",
+				"error": "Token X-Api-Key not provided",
 			})
 			return
 		}

@@ -6,10 +6,16 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jrione/gin-crud/domain"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginController struct {
 	LoginUseCase domain.LoginUseCase
+}
+
+func checkHashPass(hashed string, realPass string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(realPass))
+	return err == nil
 }
 
 func (l LoginController) Login(gctx *gin.Context) {
@@ -18,19 +24,20 @@ func (l LoginController) Login(gctx *gin.Context) {
 	if err != nil {
 		gctx.JSON(http.StatusBadRequest, gin.H{
 			"code":  http.StatusBadRequest,
-			"error": err.Error(),
+			"error": "Username and Password Required!",
 		})
 		return
 	}
+
 	data, err := l.LoginUseCase.CheckUser(gctx, req.Username)
 	if err != nil {
 		gctx.JSON(http.StatusNotFound, gin.H{
-			"code": http.StatusNotFound,
-			"err":  "User Not Found",
+			"code": http.StatusUnauthorized,
+			"err":  "Incorrect Username Or Password",
 		})
 		return
 	}
-	if req.Username != data.Username && req.Password != data.Password {
+	if req.Username != data.Username && !checkHashPass(data.Password, req.Password) {
 		gctx.JSON(http.StatusUnauthorized, gin.H{
 			"code": http.StatusUnauthorized,
 			"err":  "Incorrect Username Or Password",
