@@ -18,6 +18,7 @@ func NewLoginRoute(env *config.Config, timeout time.Duration, dbclient *sql.DB, 
 
 	lc := &controller.LoginController{
 		LoginUseCase: lu,
+		Env:          env,
 	}
 
 	gr.POST("/login", lc.Login)

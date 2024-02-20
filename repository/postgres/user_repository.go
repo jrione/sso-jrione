@@ -20,7 +20,7 @@ func NewUserRepository(conn *sql.DB) domain.UserRepository {
 }
 
 func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, err error) {
-	query := `SELECT username,full_name,email,password,updated_at FROM "User"`
+	query := `SELECT username,full_name,email,password,created_at,updated_at FROM "User"`
 	rows, err := p.DBClient.QueryContext(ctx, query)
 	if err != nil {
 		log.Print(err)
@@ -41,6 +41,8 @@ func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, 
 			&t.FullName,
 			&t.Email,
 			&t.Password,
+			&t.Created_at,
+			&t.Updated_at,
 		)
 		if err != nil {
 			log.Print(err)
@@ -53,7 +55,7 @@ func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, 
 }
 
 func (p *postgreUserRepository) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
-	query := fmt.Sprintf(`SELECT username,full_name,email,password,updated_at FROM "User" WHERE username='%s'`, username)
+	query := fmt.Sprintf(`SELECT username,full_name,email,password,created_at,updated_at FROM "User" WHERE username='%s'`, username)
 	rows := p.DBClient.QueryRow(query)
 
 	res := &domain.User{}
@@ -62,6 +64,8 @@ func (p *postgreUserRepository) GetByUsername(ctx context.Context, username stri
 		&res.FullName,
 		&res.Email,
 		&res.Password,
+		&res.Created_at,
+		&res.Updated_at,
 	)
 
 	if err != nil {
