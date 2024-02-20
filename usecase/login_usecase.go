@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	jwtConfig "github.com/jrione/gin-crud/config"
 	"github.com/jrione/gin-crud/domain"
 )
 
@@ -26,4 +27,8 @@ func (l *loginUseCase) CheckUser(c context.Context, username string) (loginData 
 	loginData, err = l.userRepo.GetByUsername(ctx, username)
 
 	return
+}
+
+func (l *loginUseCase) CreateAccessToken(user *domain.User, secret string, expire int) (accessToken string, err error) {
+	return jwtConfig.CreateAccessToken(user, secret, expire)
 }

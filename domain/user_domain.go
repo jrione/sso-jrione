@@ -3,10 +3,12 @@ package domain
 import "context"
 
 type User struct {
-	Username string
-	FullName string
-	Email    string
-	Password string
+	Username   string
+	FullName   string
+	Email      string
+	Password   string
+	Created_at string
+	Updated_at string
 }
 
 type UserRequest struct {

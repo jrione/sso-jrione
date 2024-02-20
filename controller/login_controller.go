@@ -5,12 +5,14 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/jrione/gin-crud/config"
 	"github.com/jrione/gin-crud/domain"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginController struct {
 	LoginUseCase domain.LoginUseCase
+	Env          *config.Config
 }
 
 func checkHashPass(hashed string, realPass string) bool {
@@ -45,12 +47,22 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	sess := sessions.Default(gctx)
-	sess.Set("IsLoggedIn", true)
-	sess.Save()
+	// sess := sessions.Default(gctx)
+	// sess.Set("IsLoggedIn", true)
+	// sess.Save()
+
+	accessToken, err := l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
+	if err != nil {
+		gctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"cause": err,
+		})
+		return
+	}
+
 	gctx.JSON(http.StatusOK, gin.H{
-		"sess_current": sess.Get("IsLoggedIn"),
 		"data":         data,
+		"access_token": accessToken,
 	})
 }
 
