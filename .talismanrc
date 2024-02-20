@@ -1,6 +1,6 @@
 fileignoreconfig:
 - filename: controller/login_controller.go
-  checksum: 7db74370088837f28f416272d15d69f7b48adf2967999ac3328bb28f06d4b7ba
+  checksum: 11d5649e9d39455b32c4cd69c5bfab6f654d99d24e2248a80a5860554e58934f
 - filename: controller/register_controller.go
   checksum: ae595faafddca94c779adc8bc5f97406105c87cac01b44538db9eedcf7efcc55
 - filename: config/env.go
