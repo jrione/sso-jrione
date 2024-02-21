@@ -11,12 +11,18 @@ type LoginRequest struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-type LoginUseCase interface {
-	CheckUser(c context.Context, usecase string) (*User, error)
-	CreateAccessToken(user *User, secret string, expire int) (string, error)
-}
-
 type JWTClaims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
+}
+
+type LoginResponse struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+type LoginUseCase interface {
+	CheckUser(c context.Context, usecase string) (*User, error)
+	CreateAccessToken(user *User, secret string, expire int) (string, error)
+	CreateRefreshToken(user *User, secret string, expire int) (string, error)
 }

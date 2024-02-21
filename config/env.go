@@ -4,13 +4,15 @@ import "github.com/spf13/viper"
 
 type Config struct {
 	Server struct {
-		Listen            string `mapstructure:"listen"`
-		Port              string `mapstructure:"port"`
-		Timeout           int    `mapstructure:"timeout"`
-		Mode              string `mapstructure:"mode"`
-		XApiKey           string `mapstructure:"x-api-key"`
-		AccessTokenSecret string `mapstructure:"access_token_secret"`
-		AccessTokenExpiry int    `mapstructure:"access_token_expiry"`
+		Listen             string `mapstructure:"listen"`
+		Port               string `mapstructure:"port"`
+		Timeout            int    `mapstructure:"timeout"`
+		Mode               string `mapstructure:"mode"`
+		XApiKey            string `mapstructure:"x-api-key"`
+		AccessTokenSecret  string `mapstructure:"access_token_secret"`
+		AccessTokenExpiry  int    `mapstructure:"access_token_expiry"`
+		RefreshTokenSecret string `mapstructure:"refresh_token_secret"`
+		RefreshTokenExpiry int    `mapstructure:"refresh_token_expiry"`
 	} `mapstructure:"server"`
 	Database struct {
 		Username string `mapstructure:"username"`

@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jrione/gin-crud/config"
 	"github.com/jrione/gin-crud/domain"
@@ -47,9 +46,40 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	// sess := sessions.Default(gctx)
-	// sess.Set("IsLoggedIn", true)
-	// sess.Save()
+	accessToken, err := l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
+	if err != nil {
+		gctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"cause": err,
+		})
+		return
+	}
+	refreshToken, err := l.LoginUseCase.CreateAccessToken(data, l.Env.Server.RefreshTokenSecret, l.Env.Server.RefreshTokenExpiry)
+	if err != nil {
+		gctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"cause": err,
+		})
+		return
+	}
+
+	resp := &domain.LoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}
+	gctx.JSON(http.StatusOK, resp)
+}
+
+func (l LoginController) GetLogin(gctx *gin.Context) {
+
+	data, err := l.LoginUseCase.CheckUser(gctx, "njir")
+	if err != nil {
+		gctx.JSON(http.StatusNotFound, gin.H{
+			"code": http.StatusUnauthorized,
+			"err":  "Incorrect Username Or Password",
+		})
+		return
+	}
 
 	accessToken, err := l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
 	if err != nil {
@@ -60,17 +90,18 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	gctx.JSON(http.StatusOK, gin.H{
-		"data":         data,
-		"access_token": accessToken,
-	})
-}
+	refreshToken, err := l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
+	if err != nil {
+		gctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"cause": err,
+		})
+		return
+	}
 
-func (l LoginController) GetLogin(gctx *gin.Context) {
-	sess := sessions.Default(gctx)
-	sess.Set("IsLoggedIn", true)
-	sess.Save()
-	gctx.JSON(http.StatusOK, gin.H{
-		"sess_current": sess.Get("IsLoggedIn"),
-	})
+	resp := &domain.LoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}
+	gctx.JSON(http.StatusOK, resp)
 }

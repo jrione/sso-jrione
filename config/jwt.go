@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -26,6 +27,22 @@ func CreateAccessToken(user *domain.User, secret string, expire int) (accessToke
 
 }
 
+func CreateRefreshToken(user *domain.User, secret string, expire int) (refreshToken string, err error) {
+	exp := time.Now().Add(time.Hour * time.Duration(expire)).Unix()
+	claims := &domain.JWTClaims{
+		Username: user.Username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: exp,
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	refreshToken, err = token.SignedString([]byte(secret))
+	if err != nil {
+		return "", nil
+	}
+	return refreshToken, nil
+}
+
 func IsAuthorized(authToken string, secret string) (bool, error) {
 	_, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -34,28 +51,22 @@ func IsAuthorized(authToken string, secret string) (bool, error) {
 		return []byte(secret), nil
 	})
 	if err != nil {
-		fmt.Errorf("Error parsing token: %v", err)
+		if validErr, ok := err.(*jwt.ValidationError); ok {
+			if validErr.Errors&jwt.ValidationErrorMalformed != 0 {
+				log.Printf("ErrTokenMalformed: %v", err)
+				return false, err
+			} else if validErr.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+				log.Printf("ErrTokenExpired: %v", err)
+				return false, err
+			}
+		}
+		log.Printf("Error parsing token: %v", err)
 		return false, err
 	}
 	return true, nil
 
 }
 
-func GetUsernameFromToken(authToken, secret string) (string, error) {
-	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Cannot signing method with algorithm: %v", token.Header["alg"])
-		}
-		return []byte(secret), nil
-	})
-
-	if err != nil {
-		return "", err
-	}
-
-	claim, ok := token.Claims.(jwt.MapClaims)
-	if !ok && !token.Valid {
-		return "", fmt.Errorf("Error Occured: %v")
-	}
-	return claim["username"].(string), nil
+func IsExpired(authToken, secret string) (bool, string) {
+	return false, ""
 }

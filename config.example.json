@@ -1,10 +1,13 @@
 {
     "server":{
         "listen": "127.0.0.1",
-        "port": "6969",
+        "port": "8000",
         "timeout": 2,
         "mode": "debug",
-        "x-api-key": "njirlah"
+        "x-api-key": "njirlah",
+        "access_token_secret": "BJIRSECRET",
+        "access_token_expiry": 24,
+        "refresh_token_expiry": 168
     },
     "database":{
         "username": "app",
