@@ -32,3 +32,7 @@ func (l *loginUseCase) CheckUser(c context.Context, username string) (loginData 
 func (l *loginUseCase) CreateAccessToken(user *domain.User, secret string, expire int) (accessToken string, err error) {
 	return jwtConfig.CreateAccessToken(user, secret, expire)
 }
+
+func (l *loginUseCase) CreateRefreshToken(user *domain.User, secret string, expire int) (refreshToken string, err error) {
+	return jwtConfig.CreateRefreshToken(user, secret, expire)
+}

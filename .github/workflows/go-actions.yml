@@ -32,5 +32,5 @@ jobs:
       run: |
         ./gin-crud &
         sleep 10
-        curl -o - -I "localhost:6969/test" | tac | tac | grep -q "200 OK"
+        curl -sSi localhost:8000/test | tac | tac | grep "200 OK"
 
