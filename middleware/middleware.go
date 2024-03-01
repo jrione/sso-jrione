@@ -46,9 +46,8 @@ func JWTMiddleware(tokenSecret string) gin.HandlerFunc {
 			ok, err := config.IsAuthorized(authToken, tokenSecret)
 			if err != nil {
 				gctx.JSON(http.StatusInternalServerError, gin.H{
-					"Error":      "Internal Status Error",
-					"middleware": "JWTMiddleware",
-					"Cause":      err.Error(),
+					"Error": "Internal Status Error",
+					"Cause": err.Error(),
 				})
 				gctx.Abort()
 				return
@@ -60,6 +59,8 @@ func JWTMiddleware(tokenSecret string) gin.HandlerFunc {
 				gctx.Abort()
 				return
 			}
+			gctx.Next()
+			return
 		} else {
 			gctx.JSON(http.StatusUnauthorized, gin.H{
 				"error": "Unauthorized",
@@ -67,7 +68,5 @@ func JWTMiddleware(tokenSecret string) gin.HandlerFunc {
 			gctx.Abort()
 			return
 		}
-		gctx.Next()
-		return
 	}
 }
