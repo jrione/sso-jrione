@@ -56,7 +56,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	resp := &domain.LoginResponse{
+	resp := &domain.LoginResponse{}
 	if hasRefreshTokenData == nil {
 		resp.AccessToken, err = l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
 		if err != nil {
