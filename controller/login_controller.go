@@ -91,8 +91,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 
 	} else {
 		gctx.Request.Method = "GET"
-		gctx.Writer.Header().Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5qaXIgICAgICAgICAgICAgICAgIiwiZXhwIjoxNzA5MzAwNjAxfQ.spYgQzKUSq5V7soS2aAXrF7qx-gCCJKLZ-9WN8JDjLY")
-		gctx.Redirect(http.StatusSeeOther, "/user")
+		gctx.Redirect(http.StatusSeeOther, "/")
 		gctx.Next()
 		return
 	}
