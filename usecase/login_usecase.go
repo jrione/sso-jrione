@@ -36,3 +36,7 @@ func (l *loginUseCase) CreateAccessToken(user *domain.User, secret string, expir
 func (l *loginUseCase) CreateRefreshToken(user *domain.User, secret string, expire int) (refreshToken string, err error) {
 	return jwtConfig.CreateRefreshToken(user, secret, expire)
 }
+
+func (l *loginUseCase) GetUsernameFromClaim(user string, secret string) (string, error) {
+	return jwtConfig.GetUsernameFromClaim(user, secret)
+}

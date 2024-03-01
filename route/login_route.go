@@ -8,19 +8,24 @@ import (
 	"github.com/jrione/gin-crud/config"
 	"github.com/jrione/gin-crud/controller"
 
-	loginRepo "github.com/jrione/gin-crud/repository/postgres"
-	loginUseCase "github.com/jrione/gin-crud/usecase"
+	repo "github.com/jrione/gin-crud/repository/postgres"
+	useCase "github.com/jrione/gin-crud/usecase"
 )
 
 func NewLoginRoute(env *config.Config, timeout time.Duration, dbclient *sql.DB, gr *gin.RouterGroup) {
-	lr := loginRepo.NewUserRepository(dbclient)
-	lu := loginUseCase.NewLoginUseCase(lr, timeout)
+	lr := repo.NewUserRepository(dbclient)
+	lu := useCase.NewLoginUseCase(lr, timeout)
+
+	rr := repo.NewRefreshTokenRepository(dbclient)
+	ru := useCase.NewRefreshTokenUseCase(rr, timeout)
 
 	lc := &controller.LoginController{
-		LoginUseCase: lu,
-		Env:          env,
+		LoginUseCase:        lu,
+		RefreshTokenUseCase: ru,
+		Env:                 env,
 	}
 
 	gr.POST("/login", lc.Login)
+	gr.POST("/refresh", lc.RefreshToken)
 	gr.GET("/getLogin", lc.GetLogin)
 }

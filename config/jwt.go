@@ -67,6 +67,30 @@ func IsAuthorized(authToken string, secret string) (bool, error) {
 
 }
 
-func IsExpired(authToken, secret string) (bool, string) {
-	return false, ""
+func GetUsernameFromClaim(authToken string, secret string) (user string, err error) {
+	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Cannot signing method with algorithm: %v", token.Header["alg"])
+		}
+		return []byte(secret), nil
+	})
+	if err != nil {
+		if validErr, ok := err.(*jwt.ValidationError); ok {
+			if validErr.Errors&jwt.ValidationErrorMalformed != 0 {
+				log.Printf("ErrTokenMalformed: %v", err)
+				return "", err
+			} else if validErr.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+				log.Printf("ErrTokenExpired: %v", err)
+				return "", err
+			}
+		}
+		log.Printf("Error parsing token: %v", err)
+		return "false", err
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	return claims["username"].(string), nil
+}
+
+func IsExpired(authToken, secret string) (string, string, bool) {
+	return "", "", false
 }

@@ -17,12 +17,12 @@ type JWTClaims struct {
 }
 
 type LoginResponse struct {
-	AccessToken  string
-	RefreshToken string
+	AccessToken string
 }
 
 type LoginUseCase interface {
 	CheckUser(c context.Context, usecase string) (*User, error)
 	CreateAccessToken(user *User, secret string, expire int) (string, error)
 	CreateRefreshToken(user *User, secret string, expire int) (string, error)
+	GetUsernameFromClaim(user string, secret string) (string, error)
 }
