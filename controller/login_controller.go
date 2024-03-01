@@ -56,9 +56,9 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	var newAccessToken string
+	resp := &domain.LoginResponse{
 	if hasRefreshTokenData == nil {
-		newAccessToken, err = l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
+		resp.AccessToken, err = l.LoginUseCase.CreateAccessToken(data, l.Env.Server.AccessTokenSecret, l.Env.Server.AccessTokenExpiry)
 		if err != nil {
 			gctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Internal Server Error",
@@ -97,9 +97,6 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	resp := &domain.LoginResponse{
-		AccessToken: newAccessToken,
-	}
 	gctx.JSON(http.StatusOK, resp)
 }
 
