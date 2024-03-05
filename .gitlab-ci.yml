@@ -6,6 +6,9 @@ stages:
 build image:
   only:
     - development
+  tags:
+    - gitlab-org
+    - custom-runner
   stage: build-image
   image: ${DOCKER_DIND}
   script:
@@ -13,11 +16,14 @@ build image:
     - docker build -t ${APP_NAME}:${CI_COMMIT_SHORT_SHA} .
   after_script:
     - echo "==================== Delete Image ===================="
-    - docker rmi -f ${APP_NAME}
+    - docker rmi -f ${APP_NAME}:${CI_COMMIT_SHORT_SHA}
 
 deploy to cluster:
   only:
     - development
+  tags:
+    - gitlab-org
+    - custom-runner
   stage: deploy
   image: ${DOCKER_DIND}
   script:
@@ -25,4 +31,4 @@ deploy to cluster:
     - docker run --name dev-${APP_NAME} -p 8001:8001 -d ${APP_NAME}:${CI_COMMIT_SHORT_SHA}
   after_script:
     - echo "==================== Delete Image ===================="
-    - docker rmi -f ${APP_NAME} ${REPO_IMAGE_DRCDEV}:${CI_COMMIT_SHORT_SHA} ${REPO_IMAGE_PROD}:${CI_COMMIT_SHORT_SHA}
+    - "docker rmi -f ${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
