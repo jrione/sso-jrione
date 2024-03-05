@@ -14,10 +14,8 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.21.4'
-
     - name: Build
       run: go build -v -o ./gin-crud
-
     - name: Inject Config
       run: |
         cat config.example.json  | jq \
@@ -27,16 +25,27 @@ jobs:
         --arg port "${{ secrets.PORT }}" \
         --arg name "${{ secrets.NAME }}" \
         '(. | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )' | tee config.json
-
+    - name: Save Artifact
+      uses: actions/upload-artifact@v4
+      with: 
+        name: env_artifact
+        path: ./config.json
+        retention-days: 1
     - name: Test
       run: |
         ./gin-crud &
         sleep 10
         curl -sSi localhost:8000/test | tac | tac | grep "200 OK"
+
   build-image:
+    needs: build-app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Download config.json artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: env_artifact
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
