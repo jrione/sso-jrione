@@ -14,7 +14,7 @@ build image:
   tags:
   - ${SHARED_RUNNER_DOCKER}
   stage: build-image
-  image: alpine
+  image: docker-dind
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${REGISTRY_RUL}
     - docker build -t ${APP_NAME}:${CI_COMMIT_SHORT_SHA} .
@@ -28,10 +28,12 @@ deploy to cluster:
   tags:
   - ${SHARED_RUNNER_DOCKER}
   stage: deploy
-  image: alpine
+  image: docker-dind
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${REGISTRY_URL}
     - docker run --name dev-${APP_NAME} -p 8001:8001 -d ${APP_NAME}:${CI_COMMIT_SHORT_SHA}
+    - curl localhost:8001/test
+    - docker stop dev-${APP_NAME} && docker rm dev-${APP_NAME}
   after_script:
     - echo "==================== Delete Image ===================="
     - "docker rmi -f ${APP_NAME}:${CI_COMMIT_SHORT_SHA}"
