@@ -55,3 +55,19 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-app:
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USERNAME }}
+        password: ${{ secrets.REMOTE_PASSWORD }}
+        port: ${{ secrets.REMOTE_PORT }}
+        script: |
+          docker stop ${{ vars.APP_NAME }} || true
+          docker rm ${{ vars.APP_NAME }} || true
+          docker pull p0x07g/${{ vars.APP_NAME }}
+          docker run --name ${{ vars.APP_NAME }} -p 80:8000 -d p0x07g/${{ vars.APP_NAME }}:main
