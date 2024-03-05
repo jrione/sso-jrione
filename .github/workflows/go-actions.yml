@@ -65,5 +65,5 @@ jobs:
         sshpass -p"${{secrets.REMOTE_PASSWORD}}" ssh -o StrictHostKeyChecking=no ${{secrets.REMOTE_USERNAME}}@${{secrets.REMOTE_HOST}} docker stop ${{ vars.APP_NAME }} || true
         sshpass -p"${{secrets.REMOTE_PASSWORD}}" ssh -o StrictHostKeyChecking=no ${{secrets.REMOTE_USERNAME}}@${{secrets.REMOTE_HOST}} docker rm ${{ vars.APP_NAME }} || true
         sshpass -p"${{secrets.REMOTE_PASSWORD}}" ssh -o StrictHostKeyChecking=no ${{secrets.REMOTE_USERNAME}}@${{secrets.REMOTE_HOST}} docker pull p0x07g/${{ vars.APP_NAME }}
-        sshpass -p"${{secrets.REMOTE_PASSWORD}}" ssh -o StrictHostKeyChecking=no ${{secrets.REMOTE_USERNAME}}@${{secrets.REMOTE_HOST}} docker run --name ${{ vars.APP_NAME }} -p 80:8000 -d p0x07g/${{ vars.APP_NAME }}:main
+        sshpass -p"${{secrets.REMOTE_PASSWORD}}" ssh -o StrictHostKeyChecking=no ${{secrets.REMOTE_USERNAME}}@${{secrets.REMOTE_HOST}} docker run --name ${{ vars.APP_NAME }} -p 8000:8000 -d p0x07g/${{ vars.APP_NAME }}:main
           
