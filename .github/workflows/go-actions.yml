@@ -57,6 +57,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
 
   deploy-app:
+    needs: build-app
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using password
