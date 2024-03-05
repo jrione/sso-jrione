@@ -19,12 +19,13 @@ jobs:
     - name: Inject Config
       run: |
         cat config.example.json  | jq \
+        --arg serverListen "0.0.0.0" \
         --arg username "${{ secrets.USERNAME }}" \
         --arg password "${{ secrets.PASSWORD }}" \
         --arg hostname "${{ secrets.HOSTNAME }}" \
         --arg port "${{ secrets.PORT }}" \
         --arg name "${{ secrets.NAME }}" \
-        '(. | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )' | tee config.json
+        '(. | .server.listen = $serverListen | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )' | tee config.json
     - name: Save Artifact
       uses: actions/upload-artifact@v4
       with: 
