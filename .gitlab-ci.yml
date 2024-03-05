@@ -2,15 +2,19 @@ stages:
   - build-image
   - deploy
 
+variables:
+  SHARED_RUNNER_DOCKER: gitlab-org-docker
+  SHARED_RUNNER_SHELL: gitlab-org
+  CUSTOM_RUNNER_SHELL: custom-runner-shel
+
 
 build image:
   only:
     - development
   tags:
-    - gitlab-org
-    - custom-runner
+  - ${SHARED_RUNNER_DOCKER}
   stage: build-image
-  image: ${DOCKER_DIND}
+  image: alpine
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${REGISTRY_RUL}
     - docker build -t ${APP_NAME}:${CI_COMMIT_SHORT_SHA} .
@@ -22,10 +26,9 @@ deploy to cluster:
   only:
     - development
   tags:
-    - gitlab-org
-    - custom-runner
+  - ${SHARED_RUNNER_DOCKER}
   stage: deploy
-  image: ${DOCKER_DIND}
+  image: alpine
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${REGISTRY_URL}
     - docker run --name dev-${APP_NAME} -p 8001:8001 -d ${APP_NAME}:${CI_COMMIT_SHORT_SHA}
