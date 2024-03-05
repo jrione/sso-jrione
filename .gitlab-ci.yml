@@ -1,0 +1,28 @@
+stages:
+  - build-image
+  - deploy
+
+
+build image:
+  only:
+    - development
+  stage: build-image
+  image: ${DOCKER_DIND}
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${REGISTRY_RUL}
+    - docker build -t ${APP_NAME}:${CI_COMMIT_SHORT_SHA} .
+  after_script:
+    - echo "==================== Delete Image ===================="
+    - docker rmi -f ${APP_NAME}
+
+deploy to cluster:
+  only:
+    - development
+  stage: deploy
+  image: ${DOCKER_DIND}
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${REGISTRY_URL}
+    - docker run --name dev-${APP_NAME} -p 8001:8001 -d ${APP_NAME}:${CI_COMMIT_SHORT_SHA}
+  after_script:
+    - echo "==================== Delete Image ===================="
+    - docker rmi -f ${APP_NAME} ${REPO_IMAGE_DRCDEV}:${CI_COMMIT_SHORT_SHA} ${REPO_IMAGE_PROD}:${CI_COMMIT_SHORT_SHA}
