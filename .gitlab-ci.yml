@@ -7,7 +7,6 @@ variables:
   SHARED_RUNNER_SHELL: gitlab-org
   CUSTOM_RUNNER_SHELL: custom-runner-shel
 
-
 build image:
   only:
     - development
