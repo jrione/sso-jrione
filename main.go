@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jrione/gin-crud/config"
-	"github.com/jrione/gin-crud/route"
+	"github.com/jrione/sso-jrione/config"
+	"github.com/jrione/sso-jrione/route"
 )
 
 func main() {

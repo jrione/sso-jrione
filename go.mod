@@ -1,4 +1,4 @@
-module github.com/jrione/gin-crud
+module github.com/jrione/sso-jrione
 
 go 1.21.4
 

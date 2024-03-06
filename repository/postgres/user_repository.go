@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jrione/gin-crud/domain"
+	"github.com/jrione/sso-jrione/domain"
 )
 
 type postgreUserRepository struct {

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/jrione/gin-crud/domain"
+	"github.com/jrione/sso-jrione/domain"
 )
 
 func CreateAccessToken(user *domain.User, secret string, expire int) (accessToken string, err error) {
