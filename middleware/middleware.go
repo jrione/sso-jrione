@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/jrione/gin-crud/config"
+	"github.com/jrione/sso-jrione/config"
 )
 
 func AuthMiddleware(env *config.Config) gin.HandlerFunc {

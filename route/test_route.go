@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jrione/gin-crud/config"
+	"github.com/jrione/sso-jrione/config"
 )
 
 func NewTestRoute(env *config.Config, timeout time.Duration, gr *gin.RouterGroup) {

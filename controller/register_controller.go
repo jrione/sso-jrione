@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jrione/gin-crud/domain"
+	"github.com/jrione/sso-jrione/domain"
 	"golang.org/x/crypto/bcrypt"
 )
 

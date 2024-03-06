@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jrione/gin-crud/config"
-	"github.com/jrione/gin-crud/controller"
-	userRepo "github.com/jrione/gin-crud/repository/postgres"
-	userUseCase "github.com/jrione/gin-crud/usecase"
+	"github.com/jrione/sso-jrione/config"
+	"github.com/jrione/sso-jrione/controller"
+	userRepo "github.com/jrione/sso-jrione/repository/postgres"
+	userUseCase "github.com/jrione/sso-jrione/usecase"
 )
 
 func NewRegisterRoute(env *config.Config, timeout time.Duration, dbclient *sql.DB, gr *gin.RouterGroup) {

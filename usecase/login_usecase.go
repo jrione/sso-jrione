@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	jwtConfig "github.com/jrione/gin-crud/config"
-	"github.com/jrione/gin-crud/domain"
+	jwtConfig "github.com/jrione/sso-jrione/config"
+	"github.com/jrione/sso-jrione/domain"
 )
 
 type loginUseCase struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/jrione/gin-crud/domain"
+	"github.com/jrione/sso-jrione/domain"
 )
 
 type refreshTokenUseCase struct {
