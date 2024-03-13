@@ -14,7 +14,6 @@ func SetupRoute(env *config.Config, timeout time.Duration, dbclient *sql.DB, r *
 	NewTestRoute(env, timeout, publicRouter)
 
 	authRouter := r.Group("/auth")
-	// authRouter.Use(middleware.AuthMiddleware(env))
 	NewRegisterRoute(env, timeout, dbclient, authRouter)
 	NewLoginRoute(env, timeout, dbclient, authRouter)
 

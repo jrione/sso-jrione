@@ -65,6 +65,14 @@ func (p *postgreRefreshTokenRepository) GetRefreshToken(ctx context.Context, us 
 // 	return "", nil
 // }
 
-// func (p *postgreRefreshTokenRepository) DeleteRefreshToken(ctx context.Context, refreshToken string) (ok bool, err error) {
-// 	return false, nil
-// }
+func (p *postgreRefreshTokenRepository) DeleteRefreshToken(ctx context.Context, username string) (ok bool, err error) {
+	query := `DELETE FROM refresh_token WHERE username=$1`
+	_, err = p.DBClient.ExecContext(ctx, query, username)
+	log.Print(query)
+	if err != nil {
+		log.Printf("Error ExecContext: %s", err)
+		return false, err
+	}
+
+	return true, nil
+}

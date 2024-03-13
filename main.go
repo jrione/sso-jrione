@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jrione/sso-jrione/config"
+	middleware "github.com/jrione/sso-jrione/middleware"
 	"github.com/jrione/sso-jrione/route"
 )
 
@@ -26,6 +27,7 @@ func main() {
 	}
 
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 	route.SetupRoute(env, timeout, dbclient, r)
 	r.Run(env.Server.Listen + ":" + env.Server.Port)
 }
