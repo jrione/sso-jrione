@@ -28,12 +28,6 @@ jobs:
         --arg port "${{ secrets.PORT }}" \
         --arg name "${{ secrets.NAME }}" \
         '(. | .server.listen = $serverListen | .database.username = $username | .database.password = $password | .database.hostname = $hostname | .database.port = $port | .database.name = $name )' | tee config.json
-    - name: Save Artifact
-      uses: actions/upload-artifact@v4
-      with: 
-        name: env_artifact
-        path: ./config.json
-        retention-days: 1
     - name: Test
       run: |
         ./gin-crud &
