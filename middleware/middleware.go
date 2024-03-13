@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -20,6 +21,23 @@ func AuthMiddleware(env *config.Config) gin.HandlerFunc {
 			gctx.Abort()
 			return
 		}
+	}
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(gctx *gin.Context) {
+		gctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		gctx.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		gctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		gctx.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if gctx.Request.Method == "OPTIONS" {
+			log.Print("Handling Options")
+			gctx.AbortWithStatus(204)
+			return
+		}
+
+		gctx.Next()
 	}
 }
 
@@ -59,7 +77,6 @@ func JWTMiddleware(tokenSecret string) gin.HandlerFunc {
 				gctx.Abort()
 				return
 			}
-			gctx.Next()
 			return
 		} else {
 			gctx.JSON(http.StatusUnauthorized, gin.H{

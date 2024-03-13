@@ -11,13 +11,18 @@ type LoginRequest struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
+type LoginResponse struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+type LogoutRequest struct {
+	AccessToken string `json:"access_token" binding:"required"`
+}
+
 type JWTClaims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
-}
-
-type LoginResponse struct {
-	AccessToken string
 }
 
 type LoginUseCase interface {

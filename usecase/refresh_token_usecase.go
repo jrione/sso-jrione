@@ -39,9 +39,10 @@ func (r *refreshTokenUseCase) GetRefreshToken(ctx context.Context, username stri
 // 	return "", nil
 // }
 
-// func (r *refreshTokenUseCase) DeleteRefreshToken(ctx context.Context, refreshToken string) (ok bool, err error) {
-// 	ctx, cancel := context.WithTimeout(ctx, r.contextTimeout)
-// 	defer cancel()
+func (r *refreshTokenUseCase) DeleteRefreshToken(ctx context.Context, username string) (ok bool, err error) {
+	ctx, cancel := context.WithTimeout(ctx, r.contextTimeout)
+	defer cancel()
 
-// 	return false, nil
-// }
+	ok, err = r.refreshTokenRepository.DeleteRefreshToken(ctx, username)
+	return
+}

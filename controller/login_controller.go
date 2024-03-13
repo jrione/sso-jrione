@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +34,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 
 	data, err := l.LoginUseCase.CheckUser(gctx, req.Username)
 	if err != nil {
-		gctx.JSON(http.StatusNotFound, gin.H{
+		gctx.JSON(http.StatusUnauthorized, gin.H{
 			"code": http.StatusUnauthorized,
 			"err":  "Incorrect Username Or Password",
 		})
@@ -67,7 +68,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 			return
 		}
 
-		refreshToken, err := l.LoginUseCase.CreateRefreshToken(data, l.Env.Server.RefreshTokenSecret, l.Env.Server.RefreshTokenExpiry)
+		resp.RefreshToken, err = l.LoginUseCase.CreateRefreshToken(data, l.Env.Server.RefreshTokenSecret, l.Env.Server.RefreshTokenExpiry)
 		if err != nil {
 			gctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Internal Server Error",
@@ -77,7 +78,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 		}
 		refreshTokenData := domain.RefreshTokenData{
 			Username:     data.Username,
-			RefreshToken: refreshToken,
+			RefreshToken: resp.RefreshToken,
 		}
 
 		err = l.RefreshTokenUseCase.StoreRefreshToken(gctx, refreshTokenData)
@@ -90,13 +91,47 @@ func (l LoginController) Login(gctx *gin.Context) {
 		}
 
 	} else {
-		gctx.Request.Method = "GET"
-		gctx.Redirect(http.StatusSeeOther, "/")
+		log.Printf("Refresh Token for user %s exist", data.Username)
 		gctx.Next()
 		return
 	}
 
 	gctx.JSON(http.StatusOK, resp)
+}
+
+func (l LoginController) Logout(gctx *gin.Context) {
+	req := domain.LogoutRequest{}
+	err := gctx.ShouldBindJSON(&req)
+	if err != nil {
+		gctx.JSON(http.StatusBadRequest, gin.H{
+			"code": http.StatusBadRequest,
+			"err":  "Access Token Payload Required",
+		})
+		return
+	}
+
+	usernameFromRefresh, err := config.GetUsernameFromClaim(req.AccessToken, l.Env.Server.AccessTokenSecret)
+	if err != nil {
+		if err != nil {
+			gctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Error get username from refresh token",
+				"err":   err.Error(),
+			})
+			return
+		}
+	}
+
+	if ok, err := l.RefreshTokenUseCase.DeleteRefreshToken(gctx, usernameFromRefresh); !ok {
+		gctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error get refresh token from db",
+			"err":   err.Error(),
+		})
+		return
+	}
+	gctx.JSON(http.StatusOK, gin.H{
+		"status": "success",
+	})
+
 }
 
 func (l LoginController) RefreshToken(gctx *gin.Context) {
@@ -136,7 +171,7 @@ func (l LoginController) GetLogin(gctx *gin.Context) {
 			return
 		}
 
-		refreshToken, err := l.LoginUseCase.CreateRefreshToken(data, l.Env.Server.RefreshTokenSecret, l.Env.Server.RefreshTokenExpiry)
+		resp.RefreshToken, err = l.LoginUseCase.CreateRefreshToken(data, l.Env.Server.RefreshTokenSecret, l.Env.Server.RefreshTokenExpiry)
 		if err != nil {
 			gctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Internal Server Error",
@@ -146,7 +181,7 @@ func (l LoginController) GetLogin(gctx *gin.Context) {
 		}
 		refreshTokenData := domain.RefreshTokenData{
 			Username:     data.Username,
-			RefreshToken: refreshToken,
+			RefreshToken: resp.RefreshToken,
 		}
 
 		err = l.RefreshTokenUseCase.StoreRefreshToken(gctx, refreshTokenData)
