@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -32,7 +31,6 @@ func CORSMiddleware() gin.HandlerFunc {
 		gctx.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
 		if gctx.Request.Method == "OPTIONS" {
-			log.Print("Handling Options")
 			gctx.AbortWithStatus(204)
 			return
 		}
