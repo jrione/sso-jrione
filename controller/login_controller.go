@@ -40,7 +40,8 @@ func (l LoginController) Login(gctx *gin.Context) {
 		})
 		return
 	}
-	if req.Username != data.Username && !checkHashPass(data.Password, req.Password) {
+
+	if req.Username != data.Username || !checkHashPass(data.Password, req.Password) {
 		gctx.JSON(http.StatusUnauthorized, gin.H{
 			"code": http.StatusUnauthorized,
 			"err":  "Incorrect Username Or Password",
