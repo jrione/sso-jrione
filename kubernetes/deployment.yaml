@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: sso-jrione-dev
+  name: sso-jrione-dev
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sso-jrione-dev
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: sso-jrione-dev
+    spec:
+      containers:
+      - image: registry.jri.one/dev-sso-jrione/sso-jrione:v0.0.1
+        name: sso-jrione-dev
+        ports:
+        - containerPort: 8000
+        resources: {}
+      imagePullSecrets:
+      - name: harbor-regcred
+status: {}
