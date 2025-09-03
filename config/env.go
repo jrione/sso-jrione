@@ -13,6 +13,7 @@ type Config struct {
 		AccessTokenExpiry  int    `mapstructure:"access_token_expiry"`
 		RefreshTokenSecret string `mapstructure:"refresh_token_secret"`
 		RefreshTokenExpiry int    `mapstructure:"refresh_token_expiry"`
+		AppName            string `mapstructure:"app_name"`
 	} `mapstructure:"server"`
 	Database struct {
 		Username string `mapstructure:"username"`
@@ -22,6 +23,10 @@ type Config struct {
 		Name     string `mapstructure:"name"`
 		SSLMode  string `mapstructure:"sslmode"`
 	} `mapstructure:"database"`
+	Jaeger struct {
+		Host string `mapstructure:"host"`
+		Port string `mapstructure:"port"`
+	} `mapstructure:"jaeger"`
 }
 
 func NewEnv() *Config {

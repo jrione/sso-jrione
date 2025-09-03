@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -8,7 +9,34 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jrione/sso-jrione/config"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
+
+func OTLPMiddleware(env *config.Config, ctx context.Context) (*sdktrace.TracerProvider, error) {
+	exporter, err := otlptracehttp.New(
+		ctx,
+		otlptracehttp.WithEndpoint(env.Jaeger.Host+":"+env.Jaeger.Port),
+		otlptracehttp.WithInsecure(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(env.Server.AppName),
+		)),
+	)
+
+	otel.SetTracerProvider(tp)
+	return tp, nil
+}
 
 func AuthMiddleware(env *config.Config) gin.HandlerFunc {
 	return func(gctx *gin.Context) {

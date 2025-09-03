@@ -17,5 +17,9 @@
         "port": "5432",
         "name": "app",
         "sslmode": "require"
+    },
+    "jaeger": {
+        "host": "0.0.0.0",
+        "port": "4318"
     }
 }
