@@ -25,12 +25,21 @@ func main() {
 	}()
 
 	ctx := context.Background()
-	tp, err := middleware.OTLPMiddleware(env, ctx)
+	tp, err := middleware.OTLPTraceMiddleware(env, ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	mp, err := middleware.OTLPMetricMiddleware(env, ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	defer func() {
 		if err := tp.Shutdown(nil); err != nil {
+			log.Fatal(err)
+		}
+		if err := mp.Shutdown(ctx); err != nil {
 			log.Fatal(err)
 		}
 	}()
@@ -42,6 +51,7 @@ func main() {
 	r := gin.Default()
 	r.Use(middleware.CORSMiddleware())
 	r.Use(otelgin.Middleware(env.Server.AppName))
+	r.Use(middleware.OTelMetrics(env))
 	route.SetupRoute(env, timeout, dbclient, r)
 	if err := r.Run(env.Server.Listen + ":" + env.Server.Port); err != nil {
 		log.Fatal("Server Run Failed:", err)
