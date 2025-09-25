@@ -1,4 +1,4 @@
-package auth
+package middleware
 
 import (
 	"context"
@@ -10,17 +10,39 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jrione/sso-jrione/config"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
-func OTLPMiddleware(env *config.Config, ctx context.Context) (*sdktrace.TracerProvider, error) {
+func OTLPMetricMiddleware(env *config.Config, ctx context.Context) (*sdkmetric.MeterProvider, error) {
+	exporter, err := otlpmetrichttp.New(
+		ctx,
+		otlpmetrichttp.WithEndpoint(env.OTLP.Host+":"+env.OTLP.Port),
+		//otlpmetrichttp.WithInsecure(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	mp := sdkmetric.NewMeterProvider(
+		sdkmetric.WithReader(
+			sdkmetric.NewPeriodicReader(exporter),
+		),
+	)
+
+	otel.SetMeterProvider(mp)
+	return mp, nil
+}
+
+func OTLPTraceMiddleware(env *config.Config, ctx context.Context) (*sdktrace.TracerProvider, error) {
 	exporter, err := otlptracehttp.New(
 		ctx,
-		otlptracehttp.WithEndpoint(env.Jaeger.Host+":"+env.Jaeger.Port),
-		otlptracehttp.WithInsecure(),
+		otlptracehttp.WithEndpoint(env.OTLP.Host+":"+env.OTLP.Port),
+		//otlptracehttp.WithInsecure(),
 	)
 	if err != nil {
 		return nil, err

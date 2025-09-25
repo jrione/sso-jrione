@@ -23,10 +23,10 @@ type Config struct {
 		Name     string `mapstructure:"name"`
 		SSLMode  string `mapstructure:"sslmode"`
 	} `mapstructure:"database"`
-	Jaeger struct {
+	OTLP struct {
 		Host string `mapstructure:"host"`
 		Port string `mapstructure:"port"`
-	} `mapstructure:"jaeger"`
+	} `mapstructure:"otlp"`
 }
 
 func NewEnv() *Config {
