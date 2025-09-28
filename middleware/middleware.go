@@ -32,6 +32,11 @@ func OTLPMetricMiddleware(env *config.Config, ctx context.Context) (*sdkmetric.M
 		sdkmetric.WithReader(
 			sdkmetric.NewPeriodicReader(exporter),
 		),
+		sdkmetric.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(env.Server.AppName),
+			semconv.DeploymentEnvironmentKey.String(env.Server.Mode),
+		)),
 	)
 
 	otel.SetMeterProvider(mp)
@@ -53,6 +58,7 @@ func OTLPTraceMiddleware(env *config.Config, ctx context.Context) (*sdktrace.Tra
 		sdktrace.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
 			semconv.ServiceNameKey.String(env.Server.AppName),
+			semconv.DeploymentEnvironmentKey.String(env.Server.Mode),
 		)),
 	)
 
