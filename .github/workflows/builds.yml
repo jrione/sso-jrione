@@ -67,3 +67,4 @@ jobs:
       - name: Clean up
         run: |
           rm -f config.json
+          
