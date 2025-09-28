@@ -22,10 +22,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Exit if not on main branch
-        if: endsWith(github.ref, 'main') == false
-        run: exit -1
-
       - name: Set up HashiCorp Vault
         uses: hashicorp/vault-action@v2
         with:
