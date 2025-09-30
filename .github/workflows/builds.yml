@@ -29,11 +29,18 @@ jobs:
           method: userpass
           username: ${{ secrets.VAULT_USERNAME }}
           password: ${{ secrets.VAULT_PASSWORD }}
+      
+      - name: Install Vault CLI
+        run: |
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+          sudo apt-get update && sudo apt-get install vault -y
 
       - name: Get secrets from Vault and create config.json file
         run: |
-          vault kv-get -format=json config/DEV/sso-jrione | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' > config.json
-          
+          vault kv get -format=json config/DEV/sso-jrione \
+            | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' > config.json
+
       - name: Log in to GHCR Registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
