@@ -20,6 +20,8 @@
     },
     "otlp": {
         "host": "0.0.0.0",
-        "port": "4318"
+        "port": "4318",
+        "http_prefix": "http.",
+        "sql_prefix": "db."
     }
 }

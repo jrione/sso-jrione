@@ -57,7 +57,7 @@ func OTLPTraceMiddleware(env *config.Config, ctx context.Context) (*sdktrace.Tra
 		sdktrace.WithBatcher(exporter),
 		sdktrace.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(env.Server.AppName),
+			semconv.ServiceNameKey.String(env.Server.AppName+"-"+env.Server.Mode),
 			semconv.DeploymentEnvironmentKey.String(env.Server.Mode),
 		)),
 	)

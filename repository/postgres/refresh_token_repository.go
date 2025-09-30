@@ -43,7 +43,7 @@ func (p *postgreRefreshTokenRepository) GetRefreshToken(ctx context.Context, us 
 		return nil, err
 	}
 	defer state.Close()
-	row := state.QueryRow(us)
+	row := state.QueryRowContext(ctx, us)
 
 	res = &domain.RefreshTokenData{}
 	err = row.Scan(

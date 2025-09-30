@@ -24,8 +24,10 @@ type Config struct {
 		SSLMode  string `mapstructure:"sslmode"`
 	} `mapstructure:"database"`
 	OTLP struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
+		Host       string `mapstructure:"host"`
+		Port       string `mapstructure:"port"`
+		HttpPrefix string `mapstructure:"http_prefix"`
+		SqlPrefix  string `mapstructure:"sql_prefix"`
 	} `mapstructure:"otlp"`
 }
 

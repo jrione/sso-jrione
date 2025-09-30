@@ -32,7 +32,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	data, err := l.LoginUseCase.CheckUser(gctx, req.Username)
+	data, err := l.LoginUseCase.CheckUser(gctx.Request.Context(), req.Username)
 	if err != nil {
 		gctx.JSON(http.StatusUnauthorized, gin.H{
 			"code": http.StatusUnauthorized,
@@ -49,7 +49,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 		return
 	}
 
-	hasRefreshTokenData, err := l.RefreshTokenUseCase.GetRefreshToken(gctx, data.Username)
+	hasRefreshTokenData, err := l.RefreshTokenUseCase.GetRefreshToken(gctx.Request.Context(), data.Username)
 	if err != nil {
 		gctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error get refresh token",
@@ -82,7 +82,7 @@ func (l LoginController) Login(gctx *gin.Context) {
 			RefreshToken: resp.RefreshToken,
 		}
 
-		err = l.RefreshTokenUseCase.StoreRefreshToken(gctx, refreshTokenData)
+		err = l.RefreshTokenUseCase.StoreRefreshToken(gctx.Request.Context(), refreshTokenData)
 		if err != nil {
 			gctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Internal Server Error",
@@ -122,7 +122,7 @@ func (l LoginController) Logout(gctx *gin.Context) {
 		}
 	}
 
-	if ok, err := l.RefreshTokenUseCase.DeleteRefreshToken(gctx, usernameFromRefresh); !ok {
+	if ok, err := l.RefreshTokenUseCase.DeleteRefreshToken(gctx.Request.Context(), usernameFromRefresh); !ok {
 		gctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error get refresh token from db",
 			"err":   err.Error(),
@@ -143,7 +143,7 @@ func (l LoginController) RefreshToken(gctx *gin.Context) {
 
 func (l LoginController) GetLogin(gctx *gin.Context) {
 
-	data, err := l.LoginUseCase.CheckUser(gctx, "njir")
+	data, err := l.LoginUseCase.CheckUser(gctx.Request.Context(), "njir")
 	if err != nil {
 		gctx.JSON(http.StatusNotFound, gin.H{
 			"code": http.StatusUnauthorized,
@@ -152,7 +152,7 @@ func (l LoginController) GetLogin(gctx *gin.Context) {
 		return
 	}
 
-	hasRefreshTokenData, err := l.RefreshTokenUseCase.GetRefreshToken(gctx, data.Username)
+	hasRefreshTokenData, err := l.RefreshTokenUseCase.GetRefreshToken(gctx.Request.Context(), data.Username)
 	if err != nil {
 		gctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error get refresh token",
@@ -185,7 +185,7 @@ func (l LoginController) GetLogin(gctx *gin.Context) {
 			RefreshToken: resp.RefreshToken,
 		}
 
-		err = l.RefreshTokenUseCase.StoreRefreshToken(gctx, refreshTokenData)
+		err = l.RefreshTokenUseCase.StoreRefreshToken(gctx.Request.Context(), refreshTokenData)
 		if err != nil {
 			gctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Internal Server Error",
