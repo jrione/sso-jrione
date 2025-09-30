@@ -18,11 +18,6 @@ func main() {
 	timeout := time.Duration(env.Server.Timeout) * time.Second
 
 	dbclient := app.DBClient
-	defer func() {
-		if err := dbclient.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}()
 
 	ctx := context.Background()
 	tp, err := middleware.OTLPTraceMiddleware(env, ctx)
@@ -36,6 +31,9 @@ func main() {
 	}
 
 	defer func() {
+		if err := dbclient.Close(); err != nil {
+			log.Fatal(err)
+		}
 		if err := tp.Shutdown(nil); err != nil {
 			log.Fatal(err)
 		}
@@ -50,7 +48,12 @@ func main() {
 
 	r := gin.Default()
 	r.Use(middleware.CORSMiddleware())
-	r.Use(otelgin.Middleware(env.Server.AppName))
+	r.Use(otelgin.Middleware(
+		env.Server.AppName+"-"+env.Server.Mode,
+		otelgin.WithSpanNameFormatter(func(gctx *gin.Context) string {
+			return env.OTLP.HttpPrefix + gctx.Request.Method + " " + gctx.FullPath()
+		}),
+	))
 	r.Use(middleware.OTelMetrics(env))
 	route.SetupRoute(env, timeout, dbclient, r)
 	if err := r.Run(env.Server.Listen + ":" + env.Server.Port); err != nil {

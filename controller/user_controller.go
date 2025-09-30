@@ -13,7 +13,7 @@ type UserController struct {
 }
 
 func (u UserController) GetAllUser(gctx *gin.Context) {
-	listUser, err := u.UserUseCase.GetAll(gctx)
+	listUser, err := u.UserUseCase.GetAll(gctx.Request.Context())
 	if err != nil {
 		log.Fatal(err)
 	}

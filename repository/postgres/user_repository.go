@@ -56,7 +56,7 @@ func (p *postgreUserRepository) GetAll(ctx context.Context) (res []domain.User, 
 
 func (p *postgreUserRepository) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
 	query := fmt.Sprintf(`SELECT username,full_name,email,password,created_at,updated_at FROM "User" WHERE username='%s'`, username)
-	rows := p.DBClient.QueryRow(query)
+	rows := p.DBClient.QueryRowContext(ctx, query)
 
 	res := &domain.User{}
 	err := rows.Scan(
