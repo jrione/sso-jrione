@@ -30,7 +30,8 @@ jobs:
 
       - name: Get secrets from Vault and create config.json file
         run: |
-          vault login -method=userpass username="${{ secrets.VAULT_USERNAME }}" password="${{ secrets.VAULT_PASSWORD }}" -address="${{ secrets.VAULT_ADDR }}"
+          export VAULT_ADDR="${{ secrets.VAULT_ADDR }}"
+          vault login -method=userpass username="${{ secrets.VAULT_USERNAME }}" password="${{ secrets.VAULT_PASSWORD }}"
           vault kv get -format=json config/DEV/sso-jrione \
             | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' > config.json
 
